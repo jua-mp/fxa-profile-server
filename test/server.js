@@ -16,6 +16,11 @@ describe('server', function() {
         assert.equal(res.result.version, require('../package.json').version);
         assert(res.result.commit);
 
+        // must return HPKP header
+        var hpkpHeader = 'max-age=0; includeSubDomains; pin-sha256="5kJvNEMw0KjrCAu7eXY5HZdvyCS13BbA0VJG1RSP91w="; ' +
+          'pin-sha256="PZXN3lRAy+8tBKk2Ox6F7jIlnzr2Yzmwqc3JnyfXoCw="; pin-sha256="r/mIkG3eEpVdm+u/ko/cwxzOMo1bk4TyHIlByibiA5E=";';
+        assert.equal(res.headers['public-key-pins'], hpkpHeader, 'HPKP header was set correctly');
+
         // and must return an STS header
         var stsHeader = res.headers['strict-transport-security'];
         assert.equal(stsHeader, 'max-age=15552000; includeSubdomains');
